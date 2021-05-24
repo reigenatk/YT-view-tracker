@@ -1,0 +1,28 @@
+{
+    "manifest_version": 2,
+    "name": "YT Tracker",
+    "description": "Track youtube views",
+    "version": "1.0",
+    "icons": {
+        "16": "16icon.png",
+        "48": "48icon.png",
+        "128": "128icon.png"
+    },
+    "content_scripts": [
+        {
+            "matches": ["*://www.youtube.com/*", "*://youtube.com/*"],
+            "js": ["content.js"]
+
+        }
+    ],
+    "action": {               
+        "default_icon": {
+        "16": "16icon.png"       
+      },
+        "default_popup": "popup.html"
+    },
+    "permissions": ["tabs"],
+    "background": {
+        "scripts": ["background.js"]
+    }
+}
