@@ -5,113 +5,118 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="="X-UA-Compatible" content="ie=edge">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Mate+SC&family=Merriweather&family=Shadows+Into+Light&display=swap"
+      rel="stylesheet"
+    />
     <title>YT Tracker</title>
 
     <style>
-      html,
       body {
-        font-family: "Open Sans", sans-serif;
-        font-size: 14px;
-        margin: 0;
-        min-height: 180px;
-        padding: 0;
-        width: 384px;
+        background-image: url("/../../img/bg2.jpg");
+      }
+      .logoimage {
+        width: 75px;
       }
 
-      h1 {
-        font-family: "Menlo", monospace;
-        font-size: 22px;
-        font-weight: 400;
-        margin: 0;
-        color: #242f3d;
-      }
-
-      a:link,
-      a:visited {
-        color: #000;
-        outline: 0;
-        text-decoration: none;
-      }
-
-      img {
-        width: 30px;
-      }
-      .modal-header {
+      .logostuff {
+        display: flex;
         align-items: center;
-        border-bottom: 0.5px solid #dadada;
-      }
-
-      .modal-content {
-        padding: 0 22px;
-      }
-
-      .modal-icons {
-        border-top: 0.5px solid #dadada;
-        height: 50px;
-        width: 100%;
-      }
-
-      .logo {
-        padding: 16px;
-      }
-
-      .logo-icon {
-        vertical-align: text-bottom;
-        margin-right: 12px;
+        justify-content: center;
       }
 
       .version {
-        color: #444;
-        font-size: 18px;
+        margin-left: 20px;
+        font-size: 50px;
+        color: white;
+        font-family: "Rajdhani";
       }
 
-      .flex-container {
+      .logos {
+        position: absolute;
+        left: 1%;
+        top: 1%;
+      }
+
+      .description {
+        text-align: center;
+        font-size: 30px;
+        font-family: "Merriweather";
+        color: white;
+      }
+
+      #reset {
+        position: absolute;
+        right: 5%;
+        top: 2%;
+
+        font-size: 40px;
+        font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+      }
+
+      #getData {
+        position: absolute;
+        top: 1%;
+        left: 5%;
+      }
+
+      .all-videos {
         display: flex;
         justify-content: space-between;
-        padding: 10px 22px;
+        flex-wrap: wrap;
       }
 
-      .flex {
-        opacity: 1;
-        transition: opacity 0.2s ease-in-out;
-        width: 120px;
+      .video {
+        max-width: 480px;
+        margin: 50px;
+        background-color: #fb9850;
+        color: white;
       }
-      .flex:hover {
-        opacity: 0.4;
+      .video img {
+        /* width of normal yt thumbnail 1280 x 720, I will scale down  */
+        width: 480px;
       }
 
-      .flex .fa {
-        font-size: 40px;
+      .video h1 {
+        font-size: 30px;
+        text-align: center;
+      }
+      .video h2 {
+        font-size: 20px;
+        text-align: center;
+        color: palevioletred;
       }
     </style>
   </head>
 
   <body>
-    <div class="modal-header">
-      <h1 class="logo">
-        <img src="../../img/128icon.png" /> YT Launcher
-        <span class="version">(1.0.0)</span>
-      </h1>
+    <div class="logostuff">
+      <img class="logoimage" src="../../img/128icon.png" />
+      <span class="version">YT View Tracker (1.0.0)</span>
     </div>
-    <div class="modal-content">
-      <p>Track your youtube views!</p>
+    <div class="logos">
+      <a href="https://github.com/reigenatk/YT-view-tracker"
+        ><i class="fa fa-github" style="font-size: 75px; color: white"></i
+      ></a>
     </div>
-    <div class="modal-icons">
-      <div class="flex-container">
-        <div class="flex">
-          <a href="https://github.com/reigenatk/YT-view-tracker"
-            ><i class="fa fa-github"></i
-          ></a>
-        </div>
-      </div>
-    </div>
-    <div class="modal-icons">
-      <div class="flex-container">
-        <button>View Statistics</button>
-      </div>
-    </div>
+
     <script src="../js/trackedInfo.js"></script>
-    <button id="reset">Clear All Data</button>
+    <button class="btn btn-danger" id="reset">Clear All Data</button>
     <button id="getData">Get Data</button>
+
+    <div class="all-videos"></div>
   </body>
 </html>
