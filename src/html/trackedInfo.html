@@ -107,9 +107,14 @@
 
       .video {
         max-width: 480px;
-        margin: 50px;
+        margin: 60px;
         /* background-color: #fb9850; */
       }
+      .video::after {
+        content: "";
+        width: 10em;
+      }
+
       .video img {
         /* width of normal yt thumbnail 1280 x 720, I will scale down  */
         width: 480px;

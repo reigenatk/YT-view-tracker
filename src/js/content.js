@@ -168,7 +168,7 @@ function fireContentLoadedEvent() {
   // console.log(videoTitle);
 
   let addView = () => {
-    console.log("view added");
+    // console.log("view added");
     const d = new Date();
     let dateString = dateObjectToString(d);
 
@@ -193,7 +193,7 @@ function fireContentLoadedEvent() {
           )[0].innerText += ", " + updated_num_of_views + " by you";
         }
 
-        console.log("updated views UI");
+        // console.log("updated views UI");
       }
     );
   };
