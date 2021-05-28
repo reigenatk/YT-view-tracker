@@ -20,13 +20,14 @@ chrome.storage.local.get("data", function (data) {
 let update = () => {
   // here we set window.videos to currentData
   chrome.storage.local.set({ data: window.videos }, function () {});
+  console.log(window.videos);
 };
 
 let eraseLocalStorage = () => {
   chrome.storage.local.set({ data: {} }, function () {});
   window.videos = {};
+  console.log(window.videos);
 };
-
 // eraseLocalStorage();
 
 let printStorage = () => {
@@ -86,9 +87,16 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (tab.url.indexOf(re) > -1) {
     if (changeInfo.url) {
       chrome.tabs.executeScript(tabId, {
-        runAt: "document_end",
+        runAt: "document_start",
         file: "src/js/content.js",
       });
     }
   }
 });
+
+// chrome.tabs.onActivated.addListener(function (changeInfo) {
+//   chrome.tabs.executeScript(changeInfo.tabId, {
+//     runAt: "document_start",
+//     file: "src/js/content.js",
+//   });
+// });

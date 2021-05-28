@@ -1,3 +1,5 @@
+console.log("trackedInfo");
+
 colorPairs = {
   // key is bg color, val is color of video text
   "#FE654F": "#FED18C",
@@ -113,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelector("#reset").addEventListener("click", () => {
     chrome.runtime.sendMessage({ type: "reset" });
     // console.log("reset signal sent");
-    alert("Data cleared from local storage!");
+    alert("Data cleared from local storage! Refresh to see changes");
   });
 
   // document.querySelector("#getData").addEventListener("click", () => {
