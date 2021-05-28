@@ -21,7 +21,7 @@ function getRandomInt(max) {
 
 let rollRandomColorPair = () => {
   let val = getRandomInt(Object.keys(colorPairs).length);
-  console.log(Object.values(colorPairs)[val]);
+  // console.log(Object.values(colorPairs)[val]);
   return [Object.keys(colorPairs)[val], Object.values(colorPairs)[val]];
 };
 
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   for (let i = 0; i < keysToValues.length; i++) {
     let url = keysToValues[i].name;
-    console.log(url);
+    // console.log(url);
     const div = document.createElement("div");
     div.classList.add("video");
 
@@ -56,10 +56,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // id of a youtube video always after the ?v= part
     let video_id = url.split("?v=")[1].substr(0, 11);
-    thumbnail.src =
-      "https://img.youtube.com/vi/" + video_id + "/maxresdefault.jpg";
+    thumbnail.src = "https://img.youtube.com/vi/" + video_id + "/mqdefault.jpg";
 
-    console.log(thumbnail.src);
+    // console.log(thumbnail.src);
 
     videolink.appendChild(thumbnail);
     div.appendChild(videolink);
@@ -94,10 +93,10 @@ document.addEventListener("DOMContentLoaded", function () {
     dropdownContent.classList.add("dropdown-content");
 
     let dates = bg.videos[url].dates; // an array of strings
-    console.log(dates);
+    // console.log(dates);
     // we need to display the dates now
     dates.forEach((date) => {
-      console.log(date);
+      // console.log(date);
       let a = document.createElement("a");
       a.innerText = date;
       a.style.color = "white";
@@ -113,11 +112,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.querySelector("#reset").addEventListener("click", () => {
     chrome.runtime.sendMessage({ type: "reset" });
-    console.log("reset signal sent");
+    // console.log("reset signal sent");
     alert("Data cleared from local storage!");
   });
 
-  document.querySelector("#getData").addEventListener("click", () => {
-    chrome.runtime.sendMessage({ type: "getData" });
-  });
+  // document.querySelector("#getData").addEventListener("click", () => {
+  //   chrome.runtime.sendMessage({ type: "getData" });
+  // });
 });

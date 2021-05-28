@@ -34,11 +34,11 @@ let dateObjectToString = (d) => {
 };
 
 if (document.readyState !== "loading") {
-  console.log("document is already ready, just execute code here");
+  // console.log("document is already ready, just execute code here");
   fireContentLoadedEventTimeout();
 } else {
   document.addEventListener("DOMContentLoaded", function () {
-    console.log("document was not ready, place code here");
+    // console.log("document was not ready, place code here");
     fireContentLoadedEventTimeout();
   });
 }
@@ -69,18 +69,18 @@ function changeUIBack() {
   document.getElementsByClassName(
     "view-count style-scope ytd-video-view-count-renderer"
   )[0].innerText = view_words[0] + " views";
-  console.log("change back to normal format");
+  // console.log("change back to normal format");
 }
 
 function fireContentLoadedEvent() {
-  console.log("everything has loaded, starting UI changes");
+  // console.log("everything has loaded, starting UI changes");
 
   let videoTitle =
     document.querySelector("h1").firstChild.nextSibling.innerText;
-  console.log(videoTitle);
+  // console.log(videoTitle);
 
   let addView = () => {
-    console.log("view added");
+    // console.log("view added");
     const d = new Date();
     let dateString = dateObjectToString(d);
     chrome.runtime.sendMessage(
@@ -97,7 +97,7 @@ function fireContentLoadedEvent() {
         document.getElementsByClassName(
           "view-count style-scope ytd-video-view-count-renderer"
         )[0].innerText += ", " + updated_num_of_views + " by you";
-        console.log("updated UI");
+        // console.log("updated UI");
       }
     );
   };

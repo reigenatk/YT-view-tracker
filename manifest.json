@@ -19,7 +19,13 @@
       "16": "img/16icon.png"
     }
   },
-  "permissions": ["tabs", "activeTab", "*://*/*", "storage"],
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "*://*/*",
+    "storage",
+    "unlimitedStorage"
+  ],
   "background": {
     "scripts": ["src/js/background.js"]
   }
