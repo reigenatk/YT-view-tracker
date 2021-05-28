@@ -22,6 +22,11 @@
       href="https://fonts.googleapis.com/css2?family=Mate+SC&family=Merriweather&family=Shadows+Into+Light&display=swap"
       rel="stylesheet"
     />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda&display=swap"
+      rel="stylesheet"
+    />
     <title>YT Tracker</title>
 
     <style>
@@ -36,12 +41,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        background-color: blue;
       }
 
       .version {
         margin-left: 20px;
-        font-size: 50px;
-        color: white;
+        font-size: 75px;
+        color: #c4302b;
         font-family: "Rajdhani";
       }
 
@@ -60,9 +66,9 @@
 
       #description {
         text-align: center;
-        font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-        font-size: 25px;
-        color: white;
+        font-family: "Bodoni Moda";
+        font-size: 35px;
+        color: #ffc0cb;
         margin: 15px;
       }
 
@@ -70,8 +76,19 @@
         position: absolute;
         right: 5%;
         top: 2%;
+        width: 10%;
+        white-space: normal;
+        color: #add8e6;
+        font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+      }
 
-        font-size: 40px;
+      #yt_toggle {
+        position: absolute;
+        left: 10%;
+        top: 2%;
+        width: 10%;
+        white-space: normal;
+        color: #add8e6;
         font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
       }
 
@@ -166,7 +183,9 @@
 
   <body>
     <div class="logostuff">
-      <img class="logoimage" src="../../img/128icon.png" />
+      <a href="https://www.youtube.com">
+        <img class="logoimage" src="../../img/128icon.png"
+      /></a>
       <span class="version">YT View Tracker (1.0.0)</span>
     </div>
     <div class="logos">
@@ -177,6 +196,9 @@
 
     <script src="../js/trackedInfo.js"></script>
     <button class="btn btn-danger" id="reset">Clear All Data</button>
+    <button class="btn btn-success" id="yt_toggle">
+      Toggle Youtube Display
+    </button>
     <!-- <button id="getData">Get Data</button> -->
 
     <h1 id="description">Here are your most viewed videos!</h1>

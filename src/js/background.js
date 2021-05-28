@@ -36,6 +36,8 @@ let getStorage = () => {
   });
 };
 
+var isYTContentEnabled = true;
+
 chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.type == "add-view") {
     if (req.url in window.videos) {
@@ -50,7 +52,10 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
     }
     update();
 
-    sendResponse({ views: window.videos[req.url].views });
+    sendResponse({
+      views: window.videos[req.url].views,
+      enabled: isYTContentEnabled,
+    });
   }
 
   // if bg script detects a reload, run content script to add a view
@@ -70,6 +75,16 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
     eraseLocalStorage();
   }
 
+  if (req.type == "getDataSize") {
+    chrome.storage.local.get("data", function (data) {
+      let size = roughSizeOfObject(data);
+      let sizeInKB = size / 1024;
+      sizeInKB = sizeInKB.toFixed(2);
+      console.log(sizeInKB);
+      sendResponse({ spaceTaken: sizeInKB });
+    });
+  }
+
   if (req.type == "getData") {
     console.log(window.videos);
     let numViews = window.videos[req.url];
@@ -84,6 +99,18 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
     }
     // console.log("sending " + numViews + " views for " + req.url);
   }
+
+  if (req.type == "isYTContentEnabled") {
+    sendResponse({
+      enabled: isYTContentEnabled,
+    });
+  }
+
+  if (req.type == "toggleYTEnable") {
+    isYTContentEnabled = !isYTContentEnabled;
+    sendResponse({ enabled: isYTContentEnabled });
+  }
+  return true;
 });
 
 let re = "www.youtube.com/watch?v=";
@@ -111,3 +138,29 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 //     file: "src/js/content.js",
 //   });
 // });
+
+// taken from https://stackoverflow.com/questions/1248302/how-to-get-the-size-of-a-javascript-object
+function roughSizeOfObject(object) {
+  var objectList = [];
+  var stack = [object];
+  var bytes = 0;
+
+  while (stack.length) {
+    var value = stack.pop();
+
+    if (typeof value === "boolean") {
+      bytes += 4;
+    } else if (typeof value === "string") {
+      bytes += value.length * 2;
+    } else if (typeof value === "number") {
+      bytes += 8;
+    } else if (typeof value === "object" && objectList.indexOf(value) === -1) {
+      objectList.push(value);
+
+      for (var i in value) {
+        stack.push(value[i]);
+      }
+    }
+  }
+  return bytes;
+}

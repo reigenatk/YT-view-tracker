@@ -112,10 +112,26 @@ document.addEventListener("DOMContentLoaded", function () {
     [div.style.backgroundColor, text.style.color] = rollRandomColorPair();
   }
 
+  chrome.runtime.sendMessage({ type: "getDataSize" }, (res) => {
+    let spaceTaken = res.spaceTaken;
+
+    document.querySelector("#reset").innerText += " (" + spaceTaken + " KB)";
+  });
+
   document.querySelector("#reset").addEventListener("click", () => {
     chrome.runtime.sendMessage({ type: "reset" });
     // console.log("reset signal sent");
     alert("Data cleared from local storage! Refresh to see changes");
+  });
+
+  document.querySelector("#yt_toggle").addEventListener("click", () => {
+    chrome.runtime.sendMessage({ type: "toggleYTEnable" }, (res) => {
+      if (res.enabled === false) {
+        alert("Now hiding add ons on Youtube site");
+      } else {
+        alert("Now showing add ons on Youtube site");
+      }
+    });
   });
 
   // document.querySelector("#getData").addEventListener("click", () => {

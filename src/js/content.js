@@ -92,18 +92,27 @@ function labelSidePanel(sidePanel) {
 }
 
 function sidepanelViewLabeler() {
-  let allSidePanels = document.querySelectorAll(
-    "a.yt-simple-endpoint.style-scope.ytd-compact-video-renderer"
-  );
+  chrome.runtime.sendMessage(
+    {
+      type: "isYTContentEnabled",
+    },
+    (res) => {
+      if (res.enabled === true) {
+        let allSidePanels = document.querySelectorAll(
+          "a.yt-simple-endpoint.style-scope.ytd-compact-video-renderer"
+        );
 
-  if (allSidePanels.length !== sidePanelCount) {
-    // then more side panels must've been added
-    let numAdded = allSidePanels.length - sidePanelCount;
-    sidePanelCount = allSidePanels.length;
-    for (let i = 0; i < numAdded; i++) {
-      labelSidePanel(allSidePanels[allSidePanels.length - 1 - i]);
+        if (allSidePanels.length !== sidePanelCount) {
+          // then more side panels must've been added
+          let numAdded = allSidePanels.length - sidePanelCount;
+          sidePanelCount = allSidePanels.length;
+          for (let i = 0; i < numAdded; i++) {
+            labelSidePanel(allSidePanels[allSidePanels.length - 1 - i]);
+          }
+        }
+      }
     }
-  }
+  );
 }
 
 function fireContentLoadedEventTimeout() {
@@ -168,11 +177,15 @@ function fireContentLoadedEvent() {
       },
       (response) => {
         // after we receive the number of views on this video, update it in UI
-        let updated_num_of_views = response.views;
+        // but only update UI if it is enabled as dictated by trackedInfo.html
+        if (response.enabled === true) {
+          let updated_num_of_views = response.views;
 
-        document.getElementsByClassName(
-          "view-count style-scope ytd-video-view-count-renderer"
-        )[0].innerText += ", " + updated_num_of_views + " by you";
+          document.getElementsByClassName(
+            "view-count style-scope ytd-video-view-count-renderer"
+          )[0].innerText += ", " + updated_num_of_views + " by you";
+        }
+
         // console.log("updated UI");
       }
     );
