@@ -33,6 +33,8 @@ var dateObjectToString = (d) => {
 
 var intervalID = window.setInterval(checkIfContentLoaded, 100);
 
+var hasUIChangedBack = false;
+
 function checkIfContentLoaded() {
   let view_words = document.getElementsByClassName(
     "view-count style-scope ytd-video-view-count-renderer"
@@ -41,6 +43,7 @@ function checkIfContentLoaded() {
   if (view_words) {
     // then document has finished loading, execute stuff
     window.clearInterval(intervalID);
+    // console.log("changed UI back");
     changeUIBack();
     fireContentLoadedEventTimeout();
   }
@@ -58,7 +61,7 @@ function replayCheck() {
     if (wasReplay) {
       // if the button went from replay to play/pause, then we know we must've replayed
       wasReplay = false;
-      changeReplayUIBack();
+      changeReplayUIBack(); // the sidebar stuff can stay
       fireContentLoadedEventTimeout();
     }
   }
@@ -78,7 +81,7 @@ function changeReplayUIBack() {
 
 var sidePanelCount = 0;
 
-var fireSidepanelViewLabeler = window.setInterval(sidepanelViewLabeler, 1000);
+var fireSidepanelViewLabeler = window.setInterval(sidepanelViewLabeler, 3000);
 
 function labelSidePanel(sidePanel) {
   let url = sidePanel.href.substr(0, 43);
@@ -103,6 +106,9 @@ function labelSidePanel(sidePanel) {
 }
 
 function sidepanelViewLabeler() {
+  if (hasUIChangedBack === false) {
+    return;
+  }
   chrome.runtime.sendMessage(
     {
       type: "isYTContentEnabled",
@@ -116,9 +122,11 @@ function sidepanelViewLabeler() {
         if (allSidePanels.length !== sidePanelCount) {
           // then more side panels must've been added
           let numAdded = allSidePanels.length - sidePanelCount;
+
           sidePanelCount = allSidePanels.length;
           for (let i = 0; i < numAdded; i++) {
             labelSidePanel(allSidePanels[allSidePanels.length - 1 - i]);
+            // console.log("labeled");
           }
         }
       }
@@ -135,6 +143,7 @@ function fireContentLoadedEventTimeout() {
 function changeUIBack() {
   // first change views back to normal format
   // also change all side panel views
+  // console.log("Change UI Back");
   let view_words = document
     .getElementsByClassName(
       "view-count style-scope ytd-video-view-count-renderer"
@@ -155,8 +164,9 @@ function changeUIBack() {
       "span.style-scope.ytd-video-meta-block"
     );
     let words = viewListing.innerText.split(" ");
-    viewListing.innerText = words[0] + " " + words[1].slice(0, -1);
+    viewListing.innerText = words[0] + " views";
   }
+  hasUIChangedBack = true;
   // console.log("change back to normal format");
 }
 
