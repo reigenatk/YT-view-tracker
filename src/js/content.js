@@ -1,7 +1,5 @@
 // content script runs whenever we have a match
 
-console.log("content script");
-
 var dateObjectToString = (d) => {
   const monthNames = [
     "January",
@@ -60,9 +58,22 @@ function replayCheck() {
     if (wasReplay) {
       // if the button went from replay to play/pause, then we know we must've replayed
       wasReplay = false;
+      changeReplayUIBack();
       fireContentLoadedEventTimeout();
     }
   }
+}
+
+function changeReplayUIBack() {
+  let view_words = document
+    .getElementsByClassName(
+      "view-count style-scope ytd-video-view-count-renderer"
+    )[0]
+    .innerText.split(" ");
+
+  document.getElementsByClassName(
+    "view-count style-scope ytd-video-view-count-renderer"
+  )[0].innerText = view_words[0] + " views";
 }
 
 var sidePanelCount = 0;
@@ -72,21 +83,21 @@ var fireSidepanelViewLabeler = window.setInterval(sidepanelViewLabeler, 1000);
 function labelSidePanel(sidePanel) {
   let url = sidePanel.href.substr(0, 43);
   // ask local storage how many times this was viewed
-  console.log("asking " + url);
+  // console.log("asking " + url);
   chrome.runtime.sendMessage(
     {
       type: "getData",
       url,
     },
     (response) => {
-      console.log(response.views);
+      // console.log(response.views);
       let updated_num_of_views = response.views;
       let viewListing = sidePanel.querySelector(
         "span.style-scope.ytd-video-meta-block"
       );
 
       viewListing.innerText += ", " + updated_num_of_views + " by you";
-      console.log("updated sidepanel " + url + " to " + updated_num_of_views);
+      // console.log("updated sidepanel " + url + " to " + updated_num_of_views);
     }
   );
 }
@@ -118,13 +129,7 @@ function sidepanelViewLabeler() {
 function fireContentLoadedEventTimeout() {
   setTimeout(function () {
     fireContentLoadedEvent();
-  }, 300);
-  // 1 second for the scripts to load the right values
-  // this isn't the most elegant solution but I think it will work
-  // basically the issue I was having is that the script is running too early, and
-  // so when I do the query selectors to get innerHTML there isn't anything in the
-  // h1 yet. That's why we do a short pause. For a decently fast internet
-  // connection this should suffice
+  }, 500);
 }
 
 function changeUIBack() {
@@ -140,6 +145,7 @@ function changeUIBack() {
     "view-count style-scope ytd-video-view-count-renderer"
   )[0].innerText = view_words[0] + " views";
 
+  // sidepanel UI revert
   let allSidePanels = document.querySelectorAll(
     "a.yt-simple-endpoint.style-scope.ytd-compact-video-renderer"
   );
@@ -151,28 +157,29 @@ function changeUIBack() {
     let words = viewListing.innerText.split(" ");
     viewListing.innerText = words[0] + " " + words[1].slice(0, -1);
   }
-  console.log("change back to normal format");
+  // console.log("change back to normal format");
 }
 
 function fireContentLoadedEvent() {
   // console.log("everything has loaded, starting UI changes");
 
-  let videoTitle =
-    document.querySelector("h1").firstChild.nextSibling.innerText;
+  // let videoTitle =
+  //   document.querySelector("h1").firstChild.nextSibling.innerText;
   // console.log(videoTitle);
 
   let addView = () => {
-    // console.log("view added");
+    console.log("view added");
     const d = new Date();
     let dateString = dateObjectToString(d);
 
     // url should always be first 43 characters
+    // id is always characters 33-43 inclusive
     // this way timestamps + first time views count for the same video
+
     chrome.runtime.sendMessage(
       {
         type: "add-view",
         url: window.location.href.substr(0, 43),
-        title: videoTitle,
         date: dateString,
       },
       (response) => {
@@ -186,7 +193,7 @@ function fireContentLoadedEvent() {
           )[0].innerText += ", " + updated_num_of_views + " by you";
         }
 
-        // console.log("updated UI");
+        console.log("updated views UI");
       }
     );
   };

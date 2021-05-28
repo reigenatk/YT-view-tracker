@@ -1,5 +1,16 @@
 // background script always running
 
+// add jquery
+var script = document.createElement("script");
+script.src = "src/js/jquery.js";
+script.type = "text/javascript";
+document.getElementsByTagName("head")[0].appendChild(script);
+
+var script = document.createElement("script");
+script.src = "src/js/config.js";
+script.type = "text/javascript";
+document.getElementsByTagName("head")[0].appendChild(script);
+
 // if clicked on icon, open up trackedInfo.html in new tab
 chrome.browserAction.onClicked.addListener(function (tab) {
   chrome.tabs.create({
@@ -43,19 +54,30 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
     if (req.url in window.videos) {
       window.videos[req.url].views = window.videos[req.url].views + 1;
       window.videos[req.url].dates.push(req.date);
+      update();
+      sendResponse({
+        views: window.videos[req.url].views,
+        enabled: isYTContentEnabled,
+      });
     } else {
-      window.videos[req.url] = {
-        title: req.title,
-        views: 1,
-        dates: [req.date],
-      };
+      $.getJSON(
+        "https://noembed.com/embed",
+        { format: "json", url: req.url },
+        function (data) {
+          let videoTitle = data.title;
+          window.videos[req.url] = {
+            title: videoTitle,
+            views: 1,
+            dates: [req.date],
+          };
+          update();
+          sendResponse({
+            views: window.videos[req.url].views,
+            enabled: isYTContentEnabled,
+          });
+        }
+      );
     }
-    update();
-
-    sendResponse({
-      views: window.videos[req.url].views,
-      enabled: isYTContentEnabled,
-    });
   }
 
   // if bg script detects a reload, run content script to add a view
