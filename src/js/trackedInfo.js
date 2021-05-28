@@ -1,10 +1,50 @@
+colorPairs = {
+  // key is bg color, val is color of video text
+  "#FE654F": "#FED18C",
+  "#270722": "#9AC2C5",
+  "#282B28": "#D36135",
+  "#CE4760": "#DDF093",
+  "#664147": "#E5F9E0",
+  "#4C3B4D": "#C9EDDC",
+  "#89937C": "#69385C",
+  "#D1BCE3": "#19297C",
+  "#A63D40": "#90A959",
+  "#F7A072": "#A31621",
+  "#84DCCF": "#312F2F",
+  "#F6AE2D": "#758E4F",
+  "#938BA1": "#D5A021",
+};
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+let rollRandomColorPair = () => {
+  let val = getRandomInt(Object.keys(colorPairs).length);
+  console.log(Object.values(colorPairs)[val]);
+  return [Object.keys(colorPairs)[val], Object.values(colorPairs)[val]];
+};
+
 document.addEventListener("DOMContentLoaded", function () {
   const bg = chrome.extension.getBackgroundPage();
   let parent_div = document.querySelector(".all-videos");
   // every reload let's query the storage for what to displayt
   parent_div.innerHTML = "";
 
-  Object.keys(bg.videos).forEach(function (url) {
+  let keysToValues = [];
+  Object.keys(bg.videos).forEach((url) => {
+    keysToValues.push({ name: url, value: bg.videos[url].views });
+  });
+
+  function custom_compare(a, b) {
+    // sorted by values nonincreasing
+    return a.value - b.value;
+  }
+
+  keysToValues.sort(custom_compare).reverse();
+
+  for (let i = 0; i < keysToValues.length; i++) {
+    let url = keysToValues[i].name;
     console.log(url);
     const div = document.createElement("div");
     div.classList.add("video");
@@ -31,11 +71,50 @@ document.addEventListener("DOMContentLoaded", function () {
     viewText.innerHTML = `Views: ${bg.videos[url].views}`;
     div.appendChild(viewText);
     parent_div.appendChild(div);
-  });
+
+    // dropdown dates using bootstrap
+    // reference:
+    // <div class="dropdown">
+    //   <button class="dropbtn">Dropdown</button>
+    //   <div class="dropdown-content">
+    //     <a href="#">Link 1</a>
+    //     <a href="#">Link 2</a>
+    //     <a href="#">Link 3</a>
+    //   </div>
+    // </div>
+    let dropdownDiv = document.createElement("div");
+    dropdownDiv.classList.add("dropdown");
+
+    let dropdownButton = document.createElement("button");
+    dropdownButton.innerText = "Dates viewed";
+    dropdownButton.classList.add("dropbtn");
+    dropdownDiv.appendChild(dropdownButton);
+
+    let dropdownContent = document.createElement("div");
+    dropdownContent.classList.add("dropdown-content");
+
+    let dates = bg.videos[url].dates; // an array of strings
+    console.log(dates);
+    // we need to display the dates now
+    dates.forEach((date) => {
+      console.log(date);
+      let a = document.createElement("a");
+      a.innerText = date;
+      a.style.color = "white";
+      dropdownContent.appendChild(a);
+    });
+
+    dropdownDiv.appendChild(dropdownContent);
+    div.appendChild(dropdownDiv);
+
+    // let's roll a random color scheme
+    [div.style.backgroundColor, text.style.color] = rollRandomColorPair();
+  }
 
   document.querySelector("#reset").addEventListener("click", () => {
     chrome.runtime.sendMessage({ type: "reset" });
     console.log("reset signal sent");
+    alert("Data cleared from local storage!");
   });
 
   document.querySelector("#getData").addEventListener("click", () => {

@@ -1,6 +1,37 @@
 // content script runs whenever we have a match
 
 console.log("content script");
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+let dateObjectToString = (d) => {
+  let a =
+    d.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    }) +
+    ", " +
+    monthNames[d.getMonth()] +
+    " " +
+    d.getDay() +
+    ", " +
+    d.getFullYear();
+
+  return a;
+};
 
 if (document.readyState !== "loading") {
   console.log("document is already ready, just execute code here");
@@ -42,20 +73,6 @@ function changeUIBack() {
 }
 
 function fireContentLoadedEvent() {
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
   console.log("everything has loaded, starting UI changes");
 
   let videoTitle =
@@ -65,18 +82,7 @@ function fireContentLoadedEvent() {
   let addView = () => {
     console.log("view added");
     const d = new Date();
-    let dateString =
-      d.toLocaleString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      }) +
-      monthNames[d.getMonth()] +
-      " " +
-      d.getDay() +
-      ", " +
-      d.getFullYear();
-
+    let dateString = dateObjectToString(d);
     chrome.runtime.sendMessage(
       {
         type: "add-view",
