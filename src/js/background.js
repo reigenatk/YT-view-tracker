@@ -30,9 +30,9 @@ let eraseLocalStorage = () => {
 };
 // eraseLocalStorage();
 
-let printStorage = () => {
+let getStorage = () => {
   chrome.storage.local.get("data", function (data) {
-    // Notify that we saved.
+    return data["data"];
   });
 };
 
@@ -71,7 +71,18 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   }
 
   if (req.type == "getData") {
-    printStorage();
+    console.log(window.videos);
+    let numViews = window.videos[req.url];
+    if (numViews) {
+      sendResponse({
+        views: numViews.views,
+      });
+    } else {
+      sendResponse({
+        views: 0,
+      });
+    }
+    // console.log("sending " + numViews + " views for " + req.url);
   }
 });
 

@@ -33,37 +33,80 @@ var dateObjectToString = (d) => {
   return a;
 };
 
-var intervalID = window.setInterval(myCallback, 100);
+var intervalID = window.setInterval(checkIfContentLoaded, 100);
 
-function myCallback() {
+function checkIfContentLoaded() {
   let view_words = document.getElementsByClassName(
     "view-count style-scope ytd-video-view-count-renderer"
   )[0];
-  console.log(view_words);
+  // console.log(view_words);
   if (view_words) {
     // then document has finished loading, execute stuff
     window.clearInterval(intervalID);
+    changeUIBack();
     fireContentLoadedEventTimeout();
   }
 }
 
-// if (document.readyState === "loading") {
-//   // Loading hasn't finished yet
-//   document.addEventListener("load", function () {
-//     console.log("load");
-//     fireContentLoadedEventTimeout();
-//   });
-// } else {
-//   // `DOMContentLoaded` has already fired
-//   console.log(document.readyState); // should be 'complete'
-//   fireContentLoadedEventTimeout();
-// }
+var fireReplayButtonCheck = window.setInterval(replayCheck, 500);
+var wasReplay = false;
+
+function replayCheck() {
+  let playButton = document.querySelector("button.ytp-play-button.ytp-button");
+  // console.log(playButton.title);
+  if (playButton.title === "Replay") {
+    wasReplay = true;
+  } else if (playButton.title === "Pause (k)") {
+    if (wasReplay) {
+      // if the button went from replay to play/pause, then we know we must've replayed
+      wasReplay = false;
+      fireContentLoadedEventTimeout();
+    }
+  }
+}
+
+var sidePanelCount = 0;
+
+var fireSidepanelViewLabeler = window.setInterval(sidepanelViewLabeler, 1000);
+
+function labelSidePanel(sidePanel) {
+  let url = sidePanel.href.substr(0, 43);
+  // ask local storage how many times this was viewed
+  console.log("asking " + url);
+  chrome.runtime.sendMessage(
+    {
+      type: "getData",
+      url,
+    },
+    (response) => {
+      console.log(response.views);
+      let updated_num_of_views = response.views;
+      let viewListing = sidePanel.querySelector(
+        "span.style-scope.ytd-video-meta-block"
+      );
+
+      viewListing.innerText += ", " + updated_num_of_views + " by you";
+      console.log("updated sidepanel " + url + " to " + updated_num_of_views);
+    }
+  );
+}
+
+function sidepanelViewLabeler() {
+  let allSidePanels = document.querySelectorAll(
+    "a.yt-simple-endpoint.style-scope.ytd-compact-video-renderer"
+  );
+
+  if (allSidePanels.length !== sidePanelCount) {
+    // then more side panels must've been added
+    let numAdded = allSidePanels.length - sidePanelCount;
+    sidePanelCount = allSidePanels.length;
+    for (let i = 0; i < numAdded; i++) {
+      labelSidePanel(allSidePanels[allSidePanels.length - 1 - i]);
+    }
+  }
+}
 
 function fireContentLoadedEventTimeout() {
-  hasViewCounted = true;
-  setTimeout(function () {
-    changeUIBack();
-  }, 100);
   setTimeout(function () {
     fireContentLoadedEvent();
   }, 300);
@@ -77,6 +120,7 @@ function fireContentLoadedEventTimeout() {
 
 function changeUIBack() {
   // first change views back to normal format
+  // also change all side panel views
   let view_words = document
     .getElementsByClassName(
       "view-count style-scope ytd-video-view-count-renderer"
@@ -86,6 +130,18 @@ function changeUIBack() {
   document.getElementsByClassName(
     "view-count style-scope ytd-video-view-count-renderer"
   )[0].innerText = view_words[0] + " views";
+
+  let allSidePanels = document.querySelectorAll(
+    "a.yt-simple-endpoint.style-scope.ytd-compact-video-renderer"
+  );
+
+  for (let i = 0; i < allSidePanels.length; i++) {
+    let viewListing = allSidePanels[i].querySelector(
+      "span.style-scope.ytd-video-meta-block"
+    );
+    let words = viewListing.innerText.split(" ");
+    viewListing.innerText = words[0] + " " + words[1].slice(0, -1);
+  }
   console.log("change back to normal format");
 }
 
@@ -94,16 +150,19 @@ function fireContentLoadedEvent() {
 
   let videoTitle =
     document.querySelector("h1").firstChild.nextSibling.innerText;
-  console.log(videoTitle);
+  // console.log(videoTitle);
 
   let addView = () => {
     // console.log("view added");
     const d = new Date();
     let dateString = dateObjectToString(d);
+
+    // url should always be first 43 characters
+    // this way timestamps + first time views count for the same video
     chrome.runtime.sendMessage(
       {
         type: "add-view",
-        url: window.location.href,
+        url: window.location.href.substr(0, 43),
         title: videoTitle,
         date: dateString,
       },
