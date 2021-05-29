@@ -51,6 +51,9 @@ var isYTContentEnabled = true;
 
 chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.type == "add-view") {
+    if (window.videos == undefined) {
+      window.videos = {};
+    }
     if (req.url in window.videos) {
       window.videos[req.url].views = window.videos[req.url].views + 1;
       window.videos[req.url].dates.push(req.date);
