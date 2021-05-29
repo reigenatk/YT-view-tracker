@@ -113,9 +113,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   chrome.runtime.sendMessage({ type: "getDataSize" }, (res) => {
-    let spaceTaken = res.spaceTaken;
-
-    document.querySelector("#reset").innerText += " (" + spaceTaken + " KB)";
+    let spaceTaken = res.spaceTaken; // in KB
+    if (spaceTaken > 1024) {
+      // MB
+      spaceTaken = spaceTaken / 1024;
+      spaceTaken = spaceTaken.toFixed(2);
+      document.querySelector("#reset").innerText += " (" + spaceTaken + " MB)";
+    } else {
+      document.querySelector("#reset").innerText += " (" + spaceTaken + " KB)";
+    }
   });
 
   document.querySelector("#reset").addEventListener("click", () => {

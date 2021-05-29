@@ -48,6 +48,7 @@ let getStorage = () => {
 };
 
 var isYTContentEnabled = true;
+let re = "www.youtube.com/watch?v=";
 
 chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.type == "add-view") {
@@ -84,7 +85,8 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   if (req.type == "pageRefreshed") {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       var currTab = tabs[0]; // should only be one
-      if (currTab) {
+
+      if (currTab.url.indexOf(re) > -1) {
         chrome.tabs.executeScript(currTab.id, {
           runAt: "document_end",
           file: "src/js/content.js",
@@ -135,7 +137,6 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
   return true;
 });
 
-let re = "www.youtube.com/watch?v=";
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   // we want to run the content script if the page is reloaded from a yt video,
   // or if we visit a yt video from another yt video
