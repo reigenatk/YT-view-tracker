@@ -52,11 +52,14 @@ function checkIfContentLoaded() {
 var fireReplayButtonCheck = window.setInterval(replayCheck, 500);
 var wasReplay = false;
 
+var viewAlreadyAdded = false;
+
 function replayCheck() {
   let playButton = document.querySelector("button.ytp-play-button.ytp-button");
   // console.log(playButton.title);
   if (playButton.title === "Replay") {
     wasReplay = true;
+    viewAlreadyAdded = false;
   } else if (playButton.title === "Pause (k)") {
     if (wasReplay) {
       // if the button went from replay to play/pause, then we know we must've replayed
@@ -171,6 +174,11 @@ function changeUIBack() {
 }
 
 function fireContentLoadedEvent() {
+  // stop the weird bug with youtu.be links
+  if (viewAlreadyAdded) {
+    return;
+  }
+
   // console.log("everything has loaded, starting UI changes");
 
   // let videoTitle =
@@ -208,6 +216,7 @@ function fireContentLoadedEvent() {
     );
   };
   addView();
+  viewAlreadyAdded = true;
 
   //   let play_button = document.getElementsByClassName(
   //     "ytp-play-button ytp-button"
