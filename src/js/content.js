@@ -31,7 +31,7 @@ var dateObjectToString = (d) => {
   return a;
 };
 
-var intervalID = window.setInterval(checkIfContentLoaded, 100);
+var intervalID = window.setInterval(checkIfContentLoaded, 1000);
 
 var hasUIChangedBack = false;
 
@@ -44,7 +44,7 @@ function checkIfContentLoaded() {
     // then document has finished loading, execute stuff
     window.clearInterval(intervalID);
     // console.log("changed UI back");
-    changeUIBack();
+    // changeUIBack();
     fireContentLoadedEventTimeout();
   }
 }
@@ -64,7 +64,7 @@ function replayCheck() {
     if (wasReplay) {
       // if the button went from replay to play/pause, then we know we must've replayed
       wasReplay = false;
-      changeReplayUIBack(); // the sidebar stuff can stay
+      // changeReplayUIBack(); // the sidebar stuff can stay
       fireContentLoadedEventTimeout();
     }
   }
@@ -84,7 +84,7 @@ function changeReplayUIBack() {
 
 var sidePanelCount = 0;
 
-var fireSidepanelViewLabeler = window.setInterval(sidepanelViewLabeler, 3000);
+// var fireSidepanelViewLabeler = window.setInterval(sidepanelViewLabeler, 3000);
 
 function labelSidePanel(sidePanel) {
   let url = sidePanel.href.substr(0, 43);
@@ -206,9 +206,9 @@ function fireContentLoadedEvent() {
         if (response.enabled === true) {
           let updated_num_of_views = response.views;
 
-          document.getElementsByClassName(
-            "view-count style-scope ytd-video-view-count-renderer"
-          )[0].innerText += ", " + updated_num_of_views + " by you";
+          // document.getElementsByClassName(
+          //   "view-count style-scope ytd-video-view-count-renderer"
+          // )[0].innerText += ", " + updated_num_of_views + " by you";
         }
 
         // console.log("updated views UI");

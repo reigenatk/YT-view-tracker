@@ -131,13 +131,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.querySelector("#yt_toggle").addEventListener("click", () => {
-    chrome.runtime.sendMessage({ type: "toggleYTEnable" }, (res) => {
-      if (res.enabled === false) {
-        alert("Now hiding add ons on Youtube site");
-      } else {
-        alert("Now showing add ons on Youtube site");
-      }
-    });
+    alert("Feature coming soon...");
+    // chrome.runtime.sendMessage({ type: "toggleYTEnable" }, (res) => {
+    //   if (res.enabled === false) {
+    //     alert("Now hiding add ons on Youtube site");
+    //   } else {
+    //     alert("Now showing add ons on Youtube site");
+    //   }
+    // });
   });
 
   // document.querySelector("#getData").addEventListener("click", () => {
