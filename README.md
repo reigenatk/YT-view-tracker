@@ -21,9 +21,6 @@ But that only tells you if you've seen it before. There's no number behind how m
 
 ![image](https://user-images.githubusercontent.com/69275171/120036581-faac7200-bfc5-11eb-99b9-de78b4195978.png)
 
-You can also see exactly how many views you've done on a certain video as it is right next to the number of total views:
-
-![image](https://user-images.githubusercontent.com/69275171/120036843-5840be80-bfc6-11eb-803d-484ea86f9778.png)
 
 If you want to, the local storage stores into this path on Windows
 
